@@ -1,3 +1,5 @@
+import scala.util.Random
+
 class Player(nameInput: String, space: Int) {
   var Level: Int = _
   var Experience: Int = _
@@ -7,9 +9,10 @@ class Player(nameInput: String, space: Int) {
   var y: Int = _;
   var playerSpace: Int = space;
   var name = nameInput
-  var attackPower: Int = _
+  var attackBonus: Int = _
+  var meleeDamage: Int = _
   var armorRating: Int = _
-  var plaClass: PlayerClass = _
+  var plaClass: Classes = _
   
   
   //Player Stats
@@ -24,8 +27,20 @@ class Player(nameInput: String, space: Int) {
     y = yloc
   }
   //Attack command. 
-  def attack(input: String) : Unit = {
+  def attack(monster: Monsters) : Unit = {
+    var rand = new Random()
+    val roll = rand.nextInt(20);
+    if((attackBonus + roll) >= (10 + monster.armorRating)) {
+      monster.HP -= meleeDamage
+      println("You do " + meleeDamage + " damage to the "  + monster.name)
+    }
+    else {
+      println("You missed the " + monster.name)
+    }   
     
+  }
+  
+  def levelUp() : Unit = {
     
   }
   

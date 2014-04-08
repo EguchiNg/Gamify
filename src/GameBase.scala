@@ -2,6 +2,8 @@ object GameBase {
   import Array._;
   import scala.io.Source
   import scala.util._
+  import swing._
+  import java.awt.Color
   
   	
     var map = ofDim[Int](0, 0);

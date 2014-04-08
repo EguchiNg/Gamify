@@ -1,7 +1,7 @@
 object Calculations {
-  def attackPowerStr(str: Int, level: Int) : Int = {
+  def attackPowerStr(str: Int,level: Int, bonus: Int) : Int = {
     
-    return 2
+    return (str-10)/2 + bonus
   }
 
 }

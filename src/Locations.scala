@@ -3,6 +3,11 @@ class Locations {
   
 }
 
-class Cave extends Locations {
+class CaveRoom extends Locations {
+  
+}
+
+class emptyCave extends Locations {
+  
   
 }
