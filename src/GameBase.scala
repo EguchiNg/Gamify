@@ -48,12 +48,12 @@ object GameBase {
     
     def combat(player: Player, loc: Locations) : Unit = {
       if(combatAvailable(loc)){
-    	  println("You've encountered some monsters! Input the number of the monster you want to attack")
+    	  Console.println("You've encountered some monsters! Input the number of the monster you want to attack")
       while(combatAvailable(loc)) {
-      println("Monsters:")
+      Console.println("Monsters:")
       var i = 0;
       for(i <- 0 until loc.monsterAliveCount ){
-    	  println(i + " " + loc.opponents(i).name)
+    	  Console.println(i + " " + loc.opponents(i).name)
       }
       	var selection = loc.opponents(readInt)
       	if(player.attack(selection)){
@@ -61,12 +61,12 @@ object GameBase {
       	}
       	else {
       	  if(selection.attack(player)){
-      	    println("You died.")
+      	    Console.println("You died.")
       	    exit(0)
       	  }
       	}
       }
-    	  println("You have won the fight!")
+    	  Console.println("You have won the fight!")
       }
       
       
@@ -93,7 +93,7 @@ object GameBase {
       player.setLocation(findLoc(player.x,player.y))
       
       while(!done){
-        println("Please input where you want to go: forward, " +
+        Console.println("Please input where you want to go: forward, " +
             "back, left or right")
         player.act(readLine)
         player.setLocation(findLoc(player.x,player.y))
@@ -103,8 +103,8 @@ object GameBase {
 
   
     
-  def main(args: Array[String]) : Unit = {
-    println("Please input an int for the size of the game")
+  def main(args: Array[String])  {
+    Console.println("Please input an int for the size of the game")
     val userInput = readInt
     initializeGame(userInput)
     

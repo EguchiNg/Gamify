@@ -49,15 +49,15 @@ class Player(nameInput: String, space: Int) {
     val roll = rand.nextInt(20);
     if((attackBonus + roll) >= (10 + monster.armorRating)) {
       monster.HP -= meleeDamage
-      println("You do " + meleeDamage + " damage to the "  + monster.name)
+      Console.println("You do " + meleeDamage + " damage to the "  + monster.name)
     }
     else {
-      println("You missed the " + monster.name)
+      Console.println("You missed the " + monster.name)
     }   
     
     if(monster.HP <= 0){
-      println(monster.name + " dies")
-      println("You gain " + monster.Experience + " experience")
+      Console.println(monster.name + " dies")
+      Console.println("You gain " + monster.Experience + " experience")
       gainExperience(monster.Experience)
       
       return true;
@@ -77,38 +77,38 @@ class Player(nameInput: String, space: Int) {
       input match {
       case "forward" => 
         if(y < space){
-        println("You go forward")
+        Console.println("You go forward")
         y += 1
         }
         else if (y == playerSpace){
-          println("You hit the wall.")
+          Console.println("You hit the wall.")
         }
       case "back" => 
       	if(y > 0){
-        println("You go backwards")
+        Console.println("You go backwards")
         y -= 1
         }
         else if (y == 0){
-          println("You hit the wall.")
+          Console.println("You hit the wall.")
         }
       case "left" => 
         if(x > 0){
-        println("You go left")
+        Console.println("You go left")
         x -= 1
         }
         else if (x == 0){
-          println("You hit the wall.")
+          Console.println("You hit the wall.")
         }
       case "right" => 
         if(x < playerSpace){
-        println("You go right")
+        Console.println("You go right")
         x += 1
         }
         else if (x == playerSpace){
-          println("You hit the wall.")
+          Console.println("You hit the wall.")
         }
       case bad =>
-        println("That is not an act.");
+        Console.println("That is not an act.");
         
     }
     }
