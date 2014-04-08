@@ -14,9 +14,10 @@ class Monsters {
   var armorRating: Int = _
   var meleeDamage: Int = _
   var monsterClass: Classes = _
+  var Experience: Int = _
   
   
-  def attack(player: Player) : Unit = {
+  def attack(player: Player) : Boolean = {
     var rand = new Random()
     val roll = rand.nextInt(20);
     if((attackBonus + roll) >= (10 + player.armorRating)) {
@@ -25,7 +26,12 @@ class Monsters {
     }
     else {
       println(name + " missed " + player.name)
-    }   
+    }
+    
+    if(player.HP <= 0)
+      return true;
+    else
+      return false
     
   }
   
@@ -42,9 +48,12 @@ class Goblin(initLevel: Int) extends Monsters{
   Dexterity= 12
   Constitution = 10
   Wisdom = 10
-  attackBonus = Calculations.attackPowerStr(Strength, level, monsterClass.attackBonusMod)
-  armorRating = 5
+  
+  armorRating = -5
   monsterClass = new Warrior
+  attackBonus = Calculations.attackPowerStr(Strength, level, monsterClass.attackBonusMod)
+  meleeDamage = 1;
+  Experience = 100*level
   
   
  

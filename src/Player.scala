@@ -10,10 +10,19 @@ class Player(nameInput: String, space: Int) {
   var playerSpace: Int = space;
   var name = nameInput
   var attackBonus: Int = _
-  var meleeDamage: Int = _
+  var meleeDamage: Int = 1
   var armorRating: Int = _
   var plaClass: Classes = _
+  var currentLocation: Locations = _
   
+  def setClass(select: Classes){
+    plaClass = select;
+    MaxHP = 10
+    HP = 10
+    attackBonus = 1
+    meleeDamage = 2
+    armorRating = 2
+  }
   
   //Player Stats
   var Intelligence: Int = _
@@ -22,12 +31,20 @@ class Player(nameInput: String, space: Int) {
   var Constitution: Int = _
   var Wisdom: Int = _
   
-  def setLocation(xloc: Int, yloc: Int) : Unit = {
+  def setLocationCoord(xloc: Int, yloc: Int) : Unit = {
     x = xloc
     y = yloc
   }
+  
+  def setLocation(loc: Locations) : Unit = {
+    currentLocation = loc
+  }
+  
+  def gainExperience(amount: Int) : Unit = {
+    Experience += amount
+  }
   //Attack command. 
-  def attack(monster: Monsters) : Unit = {
+  def attack(monster: Monsters) : Boolean = {
     var rand = new Random()
     val roll = rand.nextInt(20);
     if((attackBonus + roll) >= (10 + monster.armorRating)) {
@@ -37,6 +54,16 @@ class Player(nameInput: String, space: Int) {
     else {
       println("You missed the " + monster.name)
     }   
+    
+    if(monster.HP <= 0){
+      println(monster.name + " dies")
+      println("You gain " + monster.Experience + " experience")
+      gainExperience(monster.Experience)
+      
+      return true;
+    }
+    else
+      return false;
     
   }
   
@@ -80,8 +107,8 @@ class Player(nameInput: String, space: Int) {
         else if (x == playerSpace){
           println("You hit the wall.")
         }
-      case "attack" =>
-        println("Choose your target")
+      case bad =>
+        println("That is not an act.");
         
     }
     }

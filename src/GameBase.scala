@@ -6,7 +6,7 @@ object GameBase {
   import java.awt.Color
   
   	
-    var map = ofDim[Int](0, 0);
+    var map = ofDim[Locations](0, 0);
     var x: Int = _; //x location of player
     var y: Int = _; //y location of player
     var space: Int = _ //Size of the game space
@@ -27,23 +27,77 @@ object GameBase {
       var b = 0
       for(a <- 0 until space ){
         for(b <- 0 until space){
-          map(a)(b) = rand.nextInt(5)
-          println(map(a)(b))
+          var randInt = rand.nextInt(3)
+          randInt match {
+            case 0 =>
+              map(a)(b) = new CaveRoom
+            case 1 =>
+              map(a)(b) = new EmptyCave
+            case 2 =>
+              map(a)(b) = new HealingFountain
+          }
         }
       }
         
     }
+    
+    def findLoc(xloc: Int, yloc: Int) : Locations = {
+      return map(xloc)(yloc)
+      
+    }
+    
+    def combat(player: Player, loc: Locations) : Unit = {
+      if(combatAvailable(loc)){
+    	  println("You've encountered some monsters! Input the number of the monster you want to attack")
+      while(combatAvailable(loc)) {
+      println("Monsters:")
+      var i = 0;
+      for(i <- 0 until loc.monsterAliveCount ){
+    	  println(i + " " + loc.opponents(i).name)
+      }
+      	var selection = loc.opponents(readInt)
+      	if(player.attack(selection)){
+      	  loc.monsterAliveCount -= 1
+      	}
+      	else {
+      	  if(selection.attack(player)){
+      	    println("You died.")
+      	    exit(0)
+      	  }
+      	}
+      }
+    	  println("You have won the fight!")
+      }
+      
+      
+    }
+    
+    def combatAvailable(loc: Locations) : Boolean = {
+      if(loc.monsterAliveCount <= 0){
+        return false
+      }
+      else{
+        
+        return true
+      }
+    }
+    
     
     
     //This is the main driver for running the game. Text input so far.
     def runGame() : Unit = {
       var done: Boolean = false
       var player = new Player("Sat", space);
-      player.setLocation(x, y)
+      player.setClass(new Warrior)
+      player.setLocationCoord(0, 0)
+      player.setLocation(findLoc(player.x,player.y))
+      
       while(!done){
         println("Please input where you want to go: forward, " +
             "back, left or right")
         player.act(readLine)
+        player.setLocation(findLoc(player.x,player.y))
+        combat(player, player.currentLocation)
       }
     }
 
