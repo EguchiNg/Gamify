@@ -4,7 +4,7 @@ object GameBase {
   import scala.util._
   import swing._
   import java.awt.Color
-  
+  import scala._
   	
     var map = ofDim[Locations](0, 0);
     var x: Int = _; //x location of player
