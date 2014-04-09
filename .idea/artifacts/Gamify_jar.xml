@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="Gamify:jar">
+  <artifact type="jar" build-on-make="true" name="Gamify:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Gamify_jar</output-path>
     <root id="archive" name="Gamify.jar">
       <element id="module-output" name="Gamify" />

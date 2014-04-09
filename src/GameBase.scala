@@ -22,8 +22,7 @@ object GameBase {
     
     def fillMap() : Unit = {
       val rand = new Random()
-      var a = 0
-      var b = 0
+
       for(a <- 0 until space ){
         for(b <- 0 until space){
             rand.nextInt(3) match {
@@ -49,7 +48,7 @@ object GameBase {
     	  Console.println("You've encountered some monsters! Input the number of the monster you want to attack")
       while(combatAvailable(loc)) {
       Console.println("Monsters:")
-      var i = 0
+
       for(i <- 0 until loc.monsterAliveCount ){
     	  Console.println(i + " " + loc.opponents(i).name)
       }
@@ -90,12 +89,13 @@ object GameBase {
       player.setLocationCoord(0, 0)
       player.setLocation(findLoc(player.x,player.y))
       
-      while(!done){
+      while(true){
         Console.println("Please input where you want to go: forward, " +
-            "back, left or right")
-        done = player.act(readLine)
+            "back, left or right. You may also look or exit.")
+        player.act(readLine())
         player.setLocation(findLoc(player.x,player.y))
         combat(player, player.currentLocation)
+        Console.println()
       }
     }
 
@@ -103,7 +103,7 @@ object GameBase {
     
   def main(args: Array[String])  {
     Console.println("Please input an int for the size of the game")
-    val userInput = readInt
+    val userInput = readInt()
     initializeGame(userInput)
     
     
