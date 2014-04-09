@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Gamify:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Gamify_jar</output-path>
+    <root id="archive" name="Gamify.jar">
+      <element id="module-output" name="Gamify" />
+      <element id="extracted-dir" path="C:/scala-2.10.2/lib/scala-library.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/scala-2.10.2/lib/scala-swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/scala-2.10.2/lib/scala-actors.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/scala-2.10.2/lib/scala-compiler.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="C:/scala-2.10.2/lib/scala-reflect.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

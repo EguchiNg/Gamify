@@ -72,7 +72,7 @@ class Player(nameInput: String, space: Int) {
   }
   
   
-  def act(input: String) : Unit = {
+  def act(input: String) : Boolean = {
       
       input match {
       case "forward" => 
@@ -83,6 +83,7 @@ class Player(nameInput: String, space: Int) {
         else if (y == playerSpace){
           Console.println("You hit the wall.")
         }
+        false
       case "back" => 
       	if(y > 0){
         Console.println("You go backwards")
@@ -91,6 +92,7 @@ class Player(nameInput: String, space: Int) {
         else if (y == 0){
           Console.println("You hit the wall.")
         }
+        false
       case "left" => 
         if(x > 0){
         Console.println("You go left")
@@ -99,6 +101,7 @@ class Player(nameInput: String, space: Int) {
         else if (x == 0){
           Console.println("You hit the wall.")
         }
+        false
       case "right" => 
         if(x < playerSpace){
         Console.println("You go right")
@@ -107,8 +110,13 @@ class Player(nameInput: String, space: Int) {
         else if (x == playerSpace){
           Console.println("You hit the wall.")
         }
+        false
+      case "exit" =>
+        Console.println("Goodbye.")
+        true
       case bad =>
         Console.println("That is not an act.");
+        false
         
     }
     }
