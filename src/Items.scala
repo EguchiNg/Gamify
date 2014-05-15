@@ -48,9 +48,12 @@ class Inventory(initSize: Int, player: Player) extends Items{
 } //End of inventory
 
 
-class Weapons extends Items {
-  var damageModifier: Int = _
-  var attackBonus: Int = _
+class Weapons(inputName: String, damage: Int, attackBon: Int) extends Items {
+  name = inputName
+  var damageModifier = damage
+  var attackBonus = attackBon
+
+  //Weapon Constructor
 
 
 }

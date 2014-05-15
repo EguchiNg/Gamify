@@ -52,7 +52,7 @@ class Goblin(initLevel: Int) extends Monsters{
   armorRating = -5
   monsterClass = new Warrior
   attackBonus = Calculations.attackPowerStr(Strength, level, monsterClass.attackBonusMod)
-  meleeDamage = 1;
+  meleeDamage = 10;
   Experience = 100*level
   
   
