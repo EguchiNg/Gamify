@@ -25,7 +25,9 @@ object GameBase extends SimpleSwingApplication {
     object TextInput extends TextField{
       columns = 10
     }
-
+    object InitInput extends TextField{
+      columns = 10
+    }
 
     contents = new BoxPanel(Orientation.Vertical) {
       contents += button
@@ -33,32 +35,48 @@ object GameBase extends SimpleSwingApplication {
       border = Swing.EmptyBorder(500, 30, 10, 300)
     }
 
+    var player : Player = _
+
 
     listenTo(button)
+    //Reactions to specific events given by the user.
     reactions += {
       case ButtonClicked(b) => {
-        label.text = "Game Started. Please input where you want to go: forward, \" +\n        \"back, left or right. You may also look or exit.\""
+        label.text = "Please put the size of the map you want to initialize."
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += label
+          contents += InitInput
+          border = Swing.EmptyBorder(500, 30, 10, 300)
+        }
+        listenTo(InitInput)
+
+
+       }
+      case EditDone(InitInput)=> {
+        label.text = "Please input where you want to go: forward, \" +\n        \"back, left or right. You may also look or exit.\""
+        initializeGame(InitInput.text.toInt)
+        player = runGame()
+
 
         contents = new BoxPanel(Orientation.Vertical) {
           contents += label
           contents += TextInput
+          border = Swing.EmptyBorder(500, 30, 10, 300)
         }
+        deafTo(InitInput)
         listenTo(TextInput)
-
-       }
+      }
       case EditDone(TextInput) =>{
 
-        label.text = "What next?"
+        player.act(TextInput.text)
+        player.setLocation(findLoc(player.x, player.y))
+        combat(player, player.currentLocation)
+        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
         TextInput.text = ""
-
       }
 
 
     }
-
-     //var userInput = readInt()
-    // initializeGame(userInput)
-
 
     }
 
@@ -77,7 +95,6 @@ object GameBase extends SimpleSwingApplication {
     map = ofDim(size, size)
     space = size
     fillMap()
-    runGame()
   }
 
   def fillMap(): Unit = {
@@ -141,21 +158,13 @@ object GameBase extends SimpleSwingApplication {
 
 
   //This is the main driver for running the game. Text input so far.
-  def runGame(): Unit = {
+  def runGame(): Player = {
     var done: Boolean = false
     var player = new Player("Sat", space)
     player.setClass(new Warrior)
     player.setLocationCoord(0, 0)
     player.setLocation(findLoc(player.x, player.y))
-
-    while (true) {
-      Console.println("Please input where you want to go: forward, " +
-        "back, left or right. You may also look or exit.")
-      player.act(readLine())
-      player.setLocation(findLoc(player.x, player.y))
-      combat(player, player.currentLocation)
-      Console.println()
-    }
+    return player
   }
 
 
