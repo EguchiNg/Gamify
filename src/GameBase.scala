@@ -22,10 +22,11 @@ object GameBase extends SimpleSwingApplication {
       text = "Start the game"
     }
 
-    object TextInput extends TextField{
+    object TextInput extends TextField {
       columns = 10
     }
-    object InitInput extends TextField{
+
+    object InitInput extends TextField {
       columns = 10
     }
 
@@ -35,13 +36,13 @@ object GameBase extends SimpleSwingApplication {
       border = Swing.EmptyBorder(500, 30, 10, 300)
     }
 
-    var player : Player = _
+    var player: Player = _
 
 
     listenTo(button)
     //Reactions to specific events given by the user.
     reactions += {
-      case ButtonClicked(b) => {
+      case ButtonClicked(b) =>
         label.text = "Please put the size of the map you want to initialize."
         contents = new BoxPanel(Orientation.Vertical) {
           contents += label
@@ -51,9 +52,9 @@ object GameBase extends SimpleSwingApplication {
         listenTo(InitInput)
 
 
-       }
-      case EditDone(InitInput)=> {
-        label.text = "Please input where you want to go: forward, \" +\n        \"back, left or right. You may also look or exit.\""
+
+      case EditDone(InitInput) =>
+        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
         initializeGame(InitInput.text.toInt)
         player = runGame()
 
@@ -65,20 +66,20 @@ object GameBase extends SimpleSwingApplication {
         }
         deafTo(InitInput)
         listenTo(TextInput)
-      }
-      case EditDone(TextInput) =>{
+
+      case EditDone(TextInput) =>
 
         player.act(TextInput.text)
         player.setLocation(findLoc(player.x, player.y))
         combat(player, player.currentLocation)
         label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
         TextInput.text = ""
-      }
 
 
-    }
 
     }
+
+  }
 
 
   var map = ofDim[Locations](0, 0)
