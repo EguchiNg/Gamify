@@ -71,7 +71,28 @@ object GameBase extends SimpleSwingApplication {
 
         player.act(TextInput.text)
         player.setLocation(findLoc(player.x, player.y))
-        combat(player, player.currentLocation)
+        if (combatAvailable(loc)) {
+          Console.println("You've encountered some monsters! Input the number of the monster you want to attack")
+          while (combatAvailable(loc)) {
+            Console.println("Monsters:")
+
+            for (i <- 0 until loc.monsterAliveCount) {
+              Console.println(i + " " + loc.opponents(i).name)
+            }
+            val selection = loc.opponents(readInt())
+            if (player.attack(selection)) {
+              loc.monsterAliveCount -= 1
+            }
+            else {
+              if (selection.attack(player)) {
+                Console.println("You died.")
+                sys.exit(0)
+              }
+            }
+          }
+          Console.println("You have won the fight!")
+        }
+
         label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
         TextInput.text = ""
 
@@ -161,7 +182,7 @@ object GameBase extends SimpleSwingApplication {
   //This is the main driver for running the game. Text input so far.
   def runGame(): Player = {
     var done: Boolean = false
-    var player = new Player("Sat", space)
+    val player = new Player("Sat", space)
     player.setClass(new Warrior)
     player.setLocationCoord(0, 0)
     player.setLocation(findLoc(player.x, player.y))
