@@ -71,8 +71,9 @@ object GameBase extends SimpleSwingApplication {
 
         player.act(TextInput.text)
         player.setLocation(findLoc(player.x, player.y))
+        var loc = player.currentLocation
         if (combatAvailable(loc)) {
-          Console.println("You've encountered some monsters! Input the number of the monster you want to attack")
+          label.text = "You've encountered some monsters! Input the number of the monster you want to attack"
           while (combatAvailable(loc)) {
             Console.println("Monsters:")
 
