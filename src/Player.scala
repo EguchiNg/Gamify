@@ -44,26 +44,23 @@ class Player(nameInput: String, space: Int) {
     Experience += amount
   }
   //Attack command. 
-  def attack(monster: Monsters) : Boolean = {
+  def attack(monster: Monsters) : String = {
     val rand = new Random()
     //val roll = rand.nextInt(20)
     if((attackBonus + rand.nextInt(20)) >= (10 + monster.armorRating)) {
       monster.HP -= meleeDamage
-      Console.println("You do " + meleeDamage + " damage to the "  + monster.name)
+      if(monster.HP <= 0) {
+        currentLocation.monsterAliveCount -= 1
+        return "You do " + meleeDamage + " damage to the " + monster.name + '\n' + monster.name + " dies" + '\n' + "You gain " + monster.Experience + " experience"
+
+      }
+      else
+        return "You do " + meleeDamage + " damage to the "  + monster.name
     }
     else {
-      Console.println("You missed the " + monster.name)
+      return "You missed the " + monster.name
     }   
-    
-    if(monster.HP <= 0){
-      Console.println(monster.name + " dies")
-      Console.println("You gain " + monster.Experience + " experience")
-      gainExperience(monster.Experience)
-      
-      true
-    }
-    else
-      false
+
     
   }
   
@@ -72,43 +69,47 @@ class Player(nameInput: String, space: Int) {
   }
   
   
-  def act(input: String) : Unit = {
-      
+  def act(input: String) : String = {
+      var returnString = ""
       input match {
       case "forward" => 
         if(y < space){
-        Console.println("You go forward")
-        y += 1
+          y += 1
+          returnString = "You go forward"
         }
         else if (y == playerSpace){
-          Console.println("You hit the wall.")
+          returnString = "You hit the wall."
         }
 
       case "back" => 
       	if(y > 0){
-        Console.println("You go backwards")
-        y -= 1
+          y -= 1
+
+          returnString = "You go backwards"
+
         }
         else if (y == 0){
-          Console.println("You hit the wall.")
+          returnString = "You hit the wall."
         }
 
       case "left" => 
         if(x > 0){
-        Console.println("You go left")
-        x -= 1
+          x -= 1
+          returnString = "You go left"
+
         }
         else if (x == 0){
-          Console.println("You hit the wall.")
+          returnString = "You hit the wall."
         }
 
       case "right" => 
         if(x < playerSpace){
-        Console.println("You go right")
-        x += 1
+          x += 1
+          returnString = "You go right"
+
         }
         else if (x == playerSpace){
-          Console.println("You hit the wall.")
+          returnString = "You hit the wall."
         }
       case "look" =>
         Console.println(currentLocation.description)
@@ -118,21 +119,21 @@ class Player(nameInput: String, space: Int) {
             HP+=5
           else
             HP = MaxHP
-          Console.println("You feel healthier.")
+            returnString = "You feel healthier."
         }
         else
-          Console.println("There is nothing to drink.")
+          returnString = "There is nothing to drink."
       case "exit" =>
-        Console.println("Goodbye.")
+        returnString = "Goodbye."
         sys.exit(0)
 
       case "status" =>
-        Console.println("Your HP is " + HP)
-      case bad =>
-        Console.println("That is not an act.");
+        returnString = "Your HP is " + HP
 
-        
+      case bad =>
+        returnString = "That is not an act."
     }
+    return returnString
     }
 
 }

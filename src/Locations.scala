@@ -17,7 +17,7 @@ class Locations {
 }
 class CaveRoom extends Locations {
 
-  opponents = Array(new Goblin(100))
+  opponents = Array(new Goblin(1))
   monsterAliveCount = 1
   description = "This looked like the lair of the goblin."
   

@@ -18,8 +18,16 @@ object GameBase extends SimpleSwingApplication {
     val button = new Button {
       text = "Start Game"
     }
+
+    val ContinueButton = new Button {
+      text = "Continue"
+    }
     val label = new Label {
       text = "Start the game"
+    }
+
+    var combatLabel = new Label {
+
     }
 
     object TextInput extends TextField {
@@ -27,6 +35,10 @@ object GameBase extends SimpleSwingApplication {
     }
 
     object InitInput extends TextField {
+      columns = 10
+    }
+
+    object CombatInput extends TextField {
       columns = 10
     }
 
@@ -40,9 +52,10 @@ object GameBase extends SimpleSwingApplication {
 
 
     listenTo(button)
+    listenTo(ContinueButton)
     //Reactions to specific events given by the user.
     reactions += {
-      case ButtonClicked(b) =>
+      case ButtonClicked(`button`) =>
         label.text = "Please put the size of the map you want to initialize."
         contents = new BoxPanel(Orientation.Vertical) {
           contents += label
@@ -50,11 +63,50 @@ object GameBase extends SimpleSwingApplication {
           border = Swing.EmptyBorder(500, 30, 10, 300)
         }
         listenTo(InitInput)
+        listenTo(CombatInput)
+      case ButtonClicked(`ContinueButton`) =>
+        val loc = player.currentLocation
+        var temp = "Monsters: <br/>"
+        combatLabel.text = "Monsters: " + '\n'
+        for (i <- 0 until loc.monsterAliveCount) {
+          temp = temp + i + " " + loc.opponents(i).name +" HP = " + loc.opponents(i).HP + "<br/>"
+        }
+        combatLabel = new Label("<html>" + temp + "</html>")
+        label.text = "Input the number of the monster you want to attack"
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += combatLabel
+          contents += label
+          contents += CombatInput
+          border = Swing.EmptyBorder(500, 30, 10, 300)
+        }
+      case EditDone(CombatInput) =>
+        val loc = player.currentLocation
+        val selection = loc.opponents(CombatInput.text.toInt)
+        var temp = ""
+        temp = player.attack(selection)
+        if(combatAvailable(loc)){
+          temp = temp + "<br/>" + selection.attack(player)
+          label.text = "<html>" + temp + "</html>"
+
+        }
+        //Combat has ended
+        else {
+          combatLabel.text = "You have won! Please input where you want to go: forward, back, left or right. You may also look or exit."
+          label.text = "<html>" + temp + "</html>"
+          deafTo(CombatInput)
+          contents = new BoxPanel(Orientation.Vertical) {
+            contents += combatLabel
+            contents += label
+            contents += TextInput
+            border = Swing.EmptyBorder(500, 30, 10, 300)
+          }
+        }
+        CombatInput.text = ""
 
 
 
       case EditDone(InitInput) =>
-        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
+        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
         initializeGame(InitInput.text.toInt)
         player = runGame()
 
@@ -69,33 +121,31 @@ object GameBase extends SimpleSwingApplication {
 
       case EditDone(TextInput) =>
 
-        player.act(TextInput.text)
+        var temp = player.act(TextInput.text)
         player.setLocation(findLoc(player.x, player.y))
-        var loc = player.currentLocation
-        if (combatAvailable(loc)) {
-          label.text = "You've encountered some monsters! Input the number of the monster you want to attack"
-          while (combatAvailable(loc)) {
-            Console.println("Monsters:")
+        val loc = player.currentLocation
 
-            for (i <- 0 until loc.monsterAliveCount) {
-              Console.println(i + " " + loc.opponents(i).name)
-            }
-            val selection = loc.opponents(readInt())
-            if (player.attack(selection)) {
-              loc.monsterAliveCount -= 1
-            }
-            else {
-              if (selection.attack(player)) {
-                Console.println("You died.")
-                sys.exit(0)
-              }
-            }
+        if(combatAvailable(loc)){
+          label.text = "You have encountered some monsters!"
+          listenTo(CombatInput)
+
+          contents = new BoxPanel(Orientation.Vertical) {
+            contents += ContinueButton
+            contents += label
+            border = Swing.EmptyBorder(500, 30, 10, 300)
           }
-          Console.println("You have won the fight!")
+        }
+        else {
+          label.text ="<html>" + temp + "<br/>" +  "Please input where you want to go: forward, back, left or right. You may also look or exit.</html>"
+          contents = new BoxPanel(Orientation.Vertical) {
+            contents += label
+            contents += TextInput
+            border = Swing.EmptyBorder(500, 30, 10, 300)
+          }
         }
 
-        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit.\""
         TextInput.text = ""
+        CombatInput.text = ""
 
 
 
@@ -143,7 +193,7 @@ object GameBase extends SimpleSwingApplication {
 
   }
 
-  def combat(player: Player, loc: Locations): Unit = {
+  /**def combat(player: Player, loc: Locations): Unit = {
     if (combatAvailable(loc)) {
       Console.println("You've encountered some monsters! Input the number of the monster you want to attack")
       while (combatAvailable(loc)) {
@@ -167,7 +217,7 @@ object GameBase extends SimpleSwingApplication {
     }
 
 
-  }
+  }**/
 
   def combatAvailable(loc: Locations): Boolean = {
     if (loc.monsterAliveCount <= 0) {
