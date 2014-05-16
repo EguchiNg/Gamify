@@ -16,20 +16,6 @@ object GameBase extends SimpleSwingApplication {
     Console.println("Please input an int for the size of the game")
     title = "Gamify UI"
 
-    //MENUBAR
-    menuBar = new MenuBar {
-
-      contents += new Menu("File") {
-        contents += new MenuItem("Open"){
-        }
-        contents += new MenuItem("Save"){
-        }
-        contents += new MenuItem("Exit"){
-        }
-
-      }
-    }
-
 
     //Textfields, buttons and miscellaneous
     val button = new Button {
@@ -62,6 +48,22 @@ object GameBase extends SimpleSwingApplication {
       contents += button
       contents += label
       border = Swing.EmptyBorder(300, 0, 0, 300)
+    }
+
+    //MENUBAR
+    menuBar = new MenuBar {
+      contents += new Menu("File") {
+        contents += new MenuItem(Action("Open"){
+          openFile
+        })
+        contents += new MenuItem(Action("Save"){
+          saveFile
+        })
+        contents += new Separator
+        contents += new MenuItem(Action("Exit"){
+          exit
+        })
+      }
     }
 
     var player: Player = _
@@ -227,6 +229,25 @@ object GameBase extends SimpleSwingApplication {
     return player
   }
 
+  def openFile{
+    val chooser = new FileChooser
+    if(chooser.showOpenDialog(null) == FileChooser.Result.Approve) {
+      val source = scala.io.Source.fromFile(chooser.selectedFile)
+      source.close
+    }
+  }
+
+  def saveFile{
+    val chooser = new FileChooser
+    if(chooser.showSaveDialog(null) == FileChooser.Result.Approve) {
+      val printWriter = new java.io.PrintWriter(chooser.selectedFile)
+      printWriter.close()
+    }
+  }
+
+  def exit{
+    sys.exit(0)
+  }
 
 
 
