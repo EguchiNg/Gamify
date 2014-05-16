@@ -75,63 +75,62 @@ class Player(nameInput: String, space: Int) {
       case "forward" => 
         if(y < space){
           y += 1
-          returnString = "You go forward"
+          return "You go forward"
         }
         else if (y == playerSpace){
-          returnString = "You hit the wall."
+          return "You hit the wall."
         }
 
       case "back" => 
       	if(y > 0){
           y -= 1
-
-          returnString = "You go backwards"
+          return "You go backwards"
 
         }
         else if (y == 0){
-          returnString = "You hit the wall."
+          return "You hit the wall."
         }
 
       case "left" => 
         if(x > 0){
           x -= 1
-          returnString = "You go left"
+          return "You go left"
 
         }
         else if (x == 0){
-          returnString = "You hit the wall."
+          return "You hit the wall."
         }
 
       case "right" => 
         if(x < playerSpace){
           x += 1
-          returnString = "You go right"
+          return "You go right"
 
         }
         else if (x == playerSpace){
-          returnString = "You hit the wall."
+          return "You hit the wall."
         }
       case "look" =>
-        Console.println(currentLocation.description)
+        return currentLocation.description
       case "drink" =>
         if(currentLocation.isInstanceOf[HealingFountain]) {
           if(HP+5 < MaxHP)
             HP+=5
           else
             HP = MaxHP
-            returnString = "You feel healthier."
+            return "You feel healthier."
         }
         else
-          returnString = "There is nothing to drink."
+          return "There is nothing to drink."
       case "exit" =>
-        returnString = "Goodbye."
+        return "Goodbye."
         sys.exit(0)
 
       case "status" =>
-        returnString = "Your HP is " + HP
+        return "Your HP is " + HP
 
       case bad =>
-        returnString = "That is not an act."
+        return "That is not an act."
     }
     return returnString
     }
