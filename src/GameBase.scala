@@ -24,6 +24,33 @@ object GameBase extends SimpleSwingApplication {
     val manageButton = new Button {
       text = "Custom Start"
     }
+    val backButton = new Button {
+      text = "back"
+    }
+    val backButton2 = new Button {
+      text = "back"
+    }
+
+    val locationButton = new Button {
+      text = "Add location"
+    }
+
+    val monsterButton = new Button {
+      text = "Add a monster"
+    }
+
+    val mapButton = new Button {
+      text = "Change map size"
+    }
+    val playButton = new Button {
+      text = "Play"
+    }
+    val submitLocation = new Button {
+      text = "submit"
+    }
+    val submitMonster = new Button {
+      text = "submit"
+    }
 
     val ContinueButton = new Button {
       text = "Continue"
@@ -56,11 +83,41 @@ object GameBase extends SimpleSwingApplication {
       maximumSize = new Dimension(1600,50)
       horizontalAlignment = Alignment.Center
     }
+    //Text Fields for creating stuff
+    object NameInput extends TextField {
+      columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+    }
+    object DescriptionInput extends TextField {
+      columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+    }
+    object XInput extends TextField {
+      columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+    }
+    object YInput extends TextField {
+      columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+    }
+    object InitInput2 extends TextField {
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+
+    }
+    object LevelInput extends TextField {
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
+    }
 
     contents = new BoxPanel(Orientation.Vertical) {
       contents += button
+      contents += manageButton
       contents += label
-
     }
 
     //MENUBAR
@@ -84,6 +141,15 @@ object GameBase extends SimpleSwingApplication {
 
     listenTo(button)
     listenTo(ContinueButton)
+    listenTo(manageButton)
+    listenTo(InitInput2)
+    listenTo(backButton2)
+    listenTo(monsterButton)
+    listenTo(mapButton)
+    listenTo(playButton)
+    listenTo(submitLocation)
+    listenTo(submitMonster)
+    listenTo(locationButton)
     //Reactions to specific events given by the user.
     reactions += {
       case ButtonClicked(`button`) =>
@@ -96,6 +162,77 @@ object GameBase extends SimpleSwingApplication {
         size = new Dimension(800, 600)
         listenTo(InitInput)
         listenTo(CombatInput)
+      case ButtonClicked(`backButton2`) =>
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += backButton
+          contents += locationButton
+          contents += monsterButton
+          contents += mapButton
+          contents += playButton
+          contents += label
+        }
+        size = new Dimension(800, 600)
+
+      case ButtonClicked(`manageButton`) =>
+        //Go into the management interface
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += backButton
+          contents += locationButton
+          contents += monsterButton
+          contents += mapButton
+          contents += playButton
+          contents += label
+        }
+        size = new Dimension(800, 600)
+      case ButtonClicked(`mapButton`) =>
+        label.text = "Enter size of map you want"
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += label
+          contents += backButton2
+          contents += InitInput2
+        }
+        size = new Dimension(800, 600)
+      case ButtonClicked(`locationButton`)=>
+        label.text = "Put x and y coords of where you want to put the location, and a name and description"
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += label
+          contents += backButton2
+          contents += XInput
+          contents += YInput
+          contents += DescriptionInput
+          contents += submitLocation
+        }
+        size = new Dimension(800, 600)
+      case ButtonClicked(`monsterButton`)=>
+        label.text = "Put x and y coords of where you want to put the monster, and a name and level"
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += label
+          contents += backButton2
+          contents += XInput
+          contents += YInput
+          contents += NameInput
+          contents += LevelInput
+          contents += submitMonster
+        }
+        size = new Dimension(800, 600)
+      case ButtonClicked(`submitMonster`) =>
+        label.text = "Monster Created."
+        map(XInput.text.toInt)(YInput.text.toInt).addMonster(new Monsters(NameInput.text,LevelInput.text.toInt))
+      case ButtonClicked(`submitLocation`) =>
+        label.text = "Location created."
+        map(XInput.text.toInt)(YInput.text.toInt) = new Locations
+        map(XInput.text.toInt)(YInput.text.toInt).changeDescription(DescriptionInput.text)
+
+      case ButtonClicked(`playButton`) =>
+        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
+        contents = new BoxPanel(Orientation.Vertical) {
+          contents += label
+          contents += TextInput
+        }
+        listenTo(TextInput)
+        size = new Dimension(800, 600)
+
+
       case ButtonClicked(`ContinueButton`) =>
         val loc = player.currentLocation
         var temp = "Monsters: <br/>"
@@ -113,7 +250,6 @@ object GameBase extends SimpleSwingApplication {
           contents += combatLabel
           contents += label
           contents += CombatInput
-
         }
         size = new Dimension(800, 600)
 
@@ -148,6 +284,10 @@ object GameBase extends SimpleSwingApplication {
         CombatInput.text = ""
         TextInput.text = ""
 
+      case EditDone(InitInput2) =>
+        initializeGame(InitInput2.text.toInt)
+        player = runGame()
+        label.text = "Map created"
       case EditDone(InitInput) =>
         label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
         initializeGame(InitInput.text.toInt)

@@ -1,15 +1,17 @@
 class Locations {
-  var opponents: Array[Monsters] = _
+  var opponents: Array[Monsters] = Array[Monsters]()
   var monsterAliveCount: Int = 0
   var description: String = _
 
   def addMonster(monster: Monsters) {
+    opponents = Array(monster)
+    monsterAliveCount += 1
 
   }
 
   def changeDescription(newDescription: String) {
 
-
+    description = newDescription
 
   }
   
@@ -17,7 +19,7 @@ class Locations {
 }
 class CaveRoom extends Locations {
 
-  opponents = Array(new Goblin(1))
+  opponents = Array(new Monsters("Goblin", 1))
   monsterAliveCount = 1
   description = "This looked like the lair of the goblin."
   
