@@ -19,7 +19,10 @@ object GameBase extends SimpleSwingApplication {
 
     //Textfields, buttons and miscellaneous
     val button = new Button {
-      text = "Start Game"
+      text = "Quick Start"
+    }
+    val manageButton = new Button {
+      text = "Custom Start"
     }
 
     val ContinueButton = new Button {
@@ -27,27 +30,37 @@ object GameBase extends SimpleSwingApplication {
     }
     val label = new Label {
       text = "Start the game"
+      horizontalAlignment = Alignment.Center
+      maximumSize = new Dimension(800,100)
     }
 
     var combatLabel = new Label {
+      horizontalAlignment = Alignment.Center
+      maximumSize = new Dimension(800,100)
     }
 
     object TextInput extends TextField {
       columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
     }
 
     object InitInput extends TextField {
       columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
     }
 
     object CombatInput extends TextField {
       columns = 10
+      maximumSize = new Dimension(1600,50)
+      horizontalAlignment = Alignment.Center
     }
 
     contents = new BoxPanel(Orientation.Vertical) {
       contents += button
       contents += label
-      border = Swing.EmptyBorder(300, 0, 0, 300)
+
     }
 
     //MENUBAR
@@ -78,8 +91,9 @@ object GameBase extends SimpleSwingApplication {
         contents = new BoxPanel(Orientation.Vertical) {
           contents += label
           contents += InitInput
-          border = Swing.EmptyBorder(300, 0, 0, 300)
+
         }
+        size = new Dimension(800, 600)
         listenTo(InitInput)
         listenTo(CombatInput)
       case ButtonClicked(`ContinueButton`) =>
@@ -89,15 +103,19 @@ object GameBase extends SimpleSwingApplication {
         for (i <- 0 until loc.monsterAliveCount) {
           temp = temp + i + " " + loc.opponents(i).name +" HP = " + loc.opponents(i).HP + "<br/>"
         }
-        combatLabel = new Label("<html>" + temp + "</html>")
+        combatLabel = new Label("<html>" + temp + "</html>") {
+          maximumSize = new Dimension(1600,50)
+          horizontalAlignment = Alignment.Center
+        }
         label.text = "Input the number of the monster you want to attack"
 
         contents = new BoxPanel(Orientation.Vertical) {
           contents += combatLabel
           contents += label
           contents += CombatInput
-          border = Swing.EmptyBorder(300, 0, 0, 300)
+
         }
+        size = new Dimension(800, 600)
 
       case EditDone(CombatInput) =>
         val loc = player.currentLocation
@@ -116,14 +134,15 @@ object GameBase extends SimpleSwingApplication {
         }
         //Combat has ended
         else {
-          combatLabel.text = "You have won! Please input where you want to go: forward, back, left or right. You may also look or exit."
-          label.text = "<html>" + temp + "</html>"
+          combatLabel.text = ""
+          label.text = "<html>"+"You have won! Please input where you want to go: forward, back, left or right. You may also look or exit.<br/>"+ temp + "</html>"
           contents = new BoxPanel(Orientation.Vertical) {
             contents += combatLabel
             contents += label
             contents += TextInput
-            border = Swing.EmptyBorder(300, 0, 0, 300)
+
           }
+          size = new Dimension(800, 600)
           deafTo(CombatInput)
         }
         CombatInput.text = ""
@@ -138,8 +157,9 @@ object GameBase extends SimpleSwingApplication {
         contents = new BoxPanel(Orientation.Vertical) {
           contents += label
           contents += TextInput
-          border = Swing.EmptyBorder(300, 0, 0, 300)
+
         }
+        size = new Dimension(800, 600)
         deafTo(InitInput)
         listenTo(TextInput)
 
@@ -156,8 +176,9 @@ object GameBase extends SimpleSwingApplication {
           contents = new BoxPanel(Orientation.Vertical) {
             contents += ContinueButton
             contents += label
-            border = Swing.EmptyBorder(300, 0, 0, 300)
+
           }
+          size = new Dimension(800, 600)
           TextInput.text = ""
         }
         else {
@@ -169,6 +190,9 @@ object GameBase extends SimpleSwingApplication {
 
     }
 
+    size = new Dimension(800, 600)
+    centerOnScreen()
+
   }
 
 
@@ -179,6 +203,10 @@ object GameBase extends SimpleSwingApplication {
   //y location of player
   var space: Int = _ //Size of the game space
 
+
+  def managerInitialize() : Unit = {
+
+  }
   //Initialize the game space.
   def initializeGame(size: Int): Unit = {
     x = 0

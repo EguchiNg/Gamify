@@ -51,7 +51,7 @@ class Player(nameInput: String, space: Int) {
       monster.HP -= meleeDamage
       if(monster.HP <= 0) {
         currentLocation.monsterAliveCount -= 1
-        return "You do " + meleeDamage + " damage to the " + monster.name + '\n' + monster.name + " dies" + '\n' + "You gain " + monster.Experience + " experience"
+        return "You do " + meleeDamage + " damage to the " + monster.name + "<br/>" + monster.name + " dies" + "<br/>" + "You gain " + monster.Experience + " experience"
 
       }
       else
