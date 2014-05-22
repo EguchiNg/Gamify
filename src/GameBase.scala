@@ -54,7 +54,6 @@ object GameBase extends SimpleSwingApplication {
     }
     val playButton = new Button {
       text = "Play"
-      gameStarted = 1;
     }
     val submitLocation = new Button {
       text = "submit"
@@ -165,6 +164,7 @@ object GameBase extends SimpleSwingApplication {
     listenTo(submitLocation)
     listenTo(submitMonster)
     listenTo(locationButton)
+
     //Reactions to specific events given by the user.
     reactions += {
       case ButtonClicked(`button`) =>
@@ -178,6 +178,7 @@ object GameBase extends SimpleSwingApplication {
 
           player.setClass(new Warrior)
           gameStarted = 1
+          listenTo(InitInput)
         }
         else if(gameStarted == 1) {
           initializeGame(30)
@@ -219,6 +220,7 @@ object GameBase extends SimpleSwingApplication {
         }
         if(gameStarted == 0) {
           player = new Player("Sat", 1)
+          player.setClass(new Warrior)
         }
         size = new Dimension(800, 600)
       case ButtonClicked(`mapButton`) =>
@@ -330,12 +332,13 @@ object GameBase extends SimpleSwingApplication {
 
       case EditDone(InitInput2) =>
         initializeGame(InitInput2.text.toInt)
+        gameStarted = 1
         runGame(player)
         label.text = "Map created"
       case EditDone(InitInput) =>
-        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
         initializeGame(InitInput.text.toInt)
         runGame(player)
+        label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
 
 
         contents = new BoxPanel(Orientation.Vertical) {
