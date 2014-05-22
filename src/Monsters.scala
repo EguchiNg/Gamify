@@ -2,19 +2,19 @@ import scala.util.Random
 
 class Monsters(name1: String, level1: Int) {
   var name: String = name1
-  var level: Int = 1
-  var MaxHP: Int = level*2
-  var HP: Int = level*2
+  var level: Int = level1
+  var MaxHP: Int = level1 * 2
+  var HP: Int = level1 * 2
   var Intelligence: Int = _
   var Strength: Int = _
   var Dexterity: Int = _
   var Constitution: Int = _
   var Wisdom: Int = _
-  var attackBonus: Int = 0
+  var attackBonus: Int = level1/5
   var armorRating: Int = 0
-  var meleeDamage: Int = 1
+  var meleeDamage: Int = level1 * 1
   var monsterClass: Classes = _
-  var Experience: Int = 100*level
+  var Experience: Int = 100*level1
   
   
   def attack(player: Player) : String = {
@@ -40,28 +40,3 @@ class Monsters(name1: String, level1: Int) {
 
 }
 
-/**class Goblin(name1: String, level1: Int) extends Monsters{
-  name = "Goblin"
-  level = level1
-  MaxHP = 5
-  HP = 5
-  Intelligence = 8
-  Strength= 10
-  Dexterity= 12
-  Constitution = 10
-  Wisdom = 10
-  
-  armorRating = -5
-  monsterClass = new Warrior
-  attackBonus = Calculations.attackPowerStr(Strength, level, monsterClass.attackBonusMod)
-  meleeDamage = 1
-  Experience = 100*level
-  
-  
- 
-  
-  
-  
-  
-    
-}**/

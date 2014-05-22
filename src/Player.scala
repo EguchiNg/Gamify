@@ -1,8 +1,8 @@
 import scala.util.Random
 
 class Player(nameInput: String, space: Int) {
-  var Level: Int = _
-  var Experience: Int = _
+  var Level: Int = 1
+  var Experience: Int = 0
   var MaxHP: Int = _
   var HP: Int = _
   var x: Int = _
@@ -42,15 +42,17 @@ class Player(nameInput: String, space: Int) {
   
   def gainExperience(amount: Int) : Unit = {
     Experience += amount
+    if (Experience >= 1000)
+      levelUp()
   }
   //Attack command. 
   def attack(monster: Monsters) : String = {
     val rand = new Random()
-    //val roll = rand.nextInt(20)
     if((attackBonus + rand.nextInt(20)) >= (10 + monster.armorRating)) {
       monster.HP -= meleeDamage
       if(monster.HP <= 0) {
         currentLocation.monsterAliveCount -= 1
+        gainExperience(monster.Experience)
         return "You do " + meleeDamage + " damage to the " + monster.name + "<br/>" + monster.name + " dies" + "<br/>" + "You gain " + monster.Experience + " experience"
 
       }
@@ -65,10 +67,17 @@ class Player(nameInput: String, space: Int) {
   }
   
   def levelUp() : Unit = {
-    
+    Level += 1
+    if(Level%plaClass.attackBonusMod == 0) {
+      attackBonus += 1
+    }
+    MaxHP += 5
+    HP = MaxHP
+    Experience = 0
+
   }
   
-  
+  //Takes in a string input and performs an action based on the player's input
   def act(input: String) : String = {
       var returnString = ""
       input match {
@@ -127,7 +136,7 @@ class Player(nameInput: String, space: Int) {
         sys.exit(0)
 
       case "status" =>
-        return "Your HP is " + HP
+        return "Your HP is " + HP + " Your level is" + Level + " Your class is " + plaClass.name + " YOUR NAME IS: " + name
 
       case bad =>
         return "That is not an act."

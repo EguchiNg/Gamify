@@ -12,38 +12,49 @@ import ListView._
 
 object GameBase extends SimpleSwingApplication {
 
+  var gameStarted = 0
+  var player: Player = _
+
   def top = new MainFrame {
     Console.println("Please input an int for the size of the game")
     title = "Gamify UI"
 
 
-    //Textfields, buttons and miscellaneous
+
+    //Textfields, buttons and miscellaneous.
+    //Effective but messy way. Lots of buttons and stuff everywhere
     val button = new Button {
       text = "Quick Start"
     }
+    //Button that goes into the management menu on the start screen
     val manageButton = new Button {
       text = "Custom Start"
     }
+    //A simple back button
     val backButton = new Button {
       text = "back"
     }
+    //A secondary back button
     val backButton2 = new Button {
       text = "back"
     }
 
+    //Button that goes into the add location interface.
     val locationButton = new Button {
       text = "Add location"
     }
 
+    //button to go to the add monster interface.
     val monsterButton = new Button {
       text = "Add a monster"
     }
-
+    //Button to set the map size
     val mapButton = new Button {
       text = "Change map size"
     }
     val playButton = new Button {
       text = "Play"
+      gameStarted = 1;
     }
     val submitLocation = new Button {
       text = "submit"
@@ -55,12 +66,15 @@ object GameBase extends SimpleSwingApplication {
     val ContinueButton = new Button {
       text = "Continue"
     }
+
+    //Standard label that displays most of our info
     val label = new Label {
       text = "Start the game"
       horizontalAlignment = Alignment.Center
       maximumSize = new Dimension(800,100)
     }
 
+    //Label that comes into effect during combat
     var combatLabel = new Label {
       horizontalAlignment = Alignment.Center
       maximumSize = new Dimension(800,100)
@@ -124,7 +138,8 @@ object GameBase extends SimpleSwingApplication {
     menuBar = new MenuBar {
       contents += new Menu("File") {
         contents += new MenuItem(Action("Open"){
-          openFile
+          player = openFile
+          gameStarted = 1
         })
         contents += new MenuItem(Action("Save"){
           saveFile
@@ -136,7 +151,7 @@ object GameBase extends SimpleSwingApplication {
       }
     }
 
-    var player: Player = _
+
 
 
     listenTo(button)
@@ -153,10 +168,29 @@ object GameBase extends SimpleSwingApplication {
     //Reactions to specific events given by the user.
     reactions += {
       case ButtonClicked(`button`) =>
-        label.text = "Please put the size of the map you want to initialize."
-        contents = new BoxPanel(Orientation.Vertical) {
-          contents += label
-          contents += InitInput
+        if(gameStarted == 0) {
+          label.text = "Please put the size of the map you want to initialize."
+          contents = new BoxPanel(Orientation.Vertical) {
+            contents += label
+            contents += InitInput
+          }
+          player = new Player("Sat", 1)
+
+          player.setClass(new Warrior)
+          gameStarted = 1
+        }
+        else if(gameStarted == 1) {
+          initializeGame(30)
+          label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
+          runGame(player)
+          contents = new BoxPanel(Orientation.Vertical) {
+            contents += label
+            contents += TextInput
+
+          }
+          size = new Dimension(800, 600)
+          deafTo(InitInput)
+          listenTo(TextInput)
 
         }
         size = new Dimension(800, 600)
@@ -182,6 +216,9 @@ object GameBase extends SimpleSwingApplication {
           contents += mapButton
           contents += playButton
           contents += label
+        }
+        if(gameStarted == 0) {
+          player = new Player("Sat", 1)
         }
         size = new Dimension(800, 600)
       case ButtonClicked(`mapButton`) =>
@@ -255,43 +292,50 @@ object GameBase extends SimpleSwingApplication {
 
       case EditDone(CombatInput) =>
         val loc = player.currentLocation
-        val selection = loc.opponents(CombatInput.text.toInt)
-        var temp1 = ""
-        var temp = "Monsters: <br/>"
-        temp = player.attack(selection)
-        if(combatAvailable(loc)){
-          temp = temp + "<br/>" + selection.attack(player)
-          label.text = "<html>" + temp + "</html>"
-          for (i <- 0 until loc.monsterAliveCount) {
-            temp1 = temp1 + i + " " + loc.opponents(i).name +" HP = " + loc.opponents(i).HP + "<br/>"
-          }
-          combatLabel.text = "<html>" + temp1 + "</html>"
+        try {
+          var intSelection = CombatInput.text.toInt
 
-        }
-        //Combat has ended
-        else {
-          combatLabel.text = ""
-          label.text = "<html>"+"You have won! Please input where you want to go: forward, back, left or right. You may also look or exit.<br/>"+ temp + "</html>"
-          contents = new BoxPanel(Orientation.Vertical) {
-            contents += combatLabel
-            contents += label
-            contents += TextInput
+          val selection = loc.opponents(intSelection)
+          var temp1 = ""
+          var temp = "Monsters: <br/>"
+          temp = player.attack(selection)
+          if(combatAvailable(loc)){
+            temp = temp + "<br/>" + selection.attack(player)
+            label.text = "<html>" + temp + "</html>"
+            for (i <- 0 until loc.monsterAliveCount) {
+              temp1 = temp1 + i + " " + loc.opponents(i).name +" HP = " + loc.opponents(i).HP + "<br/>"
+            }
+            combatLabel.text = "<html>" + temp1 + "</html>"
 
           }
-          size = new Dimension(800, 600)
-          deafTo(CombatInput)
+          //Combat has ended
+          else {
+            combatLabel.text = ""
+            label.text = "<html>"+"You have won! Please input where you want to go: forward, back, left or right. You may also look or exit.<br/>"+ temp + "</html>"
+            contents = new BoxPanel(Orientation.Vertical) {
+              contents += combatLabel
+              contents += label
+              contents += TextInput
+
+            }
+            size = new Dimension(800, 600)
+            deafTo(CombatInput)
+          }
+          CombatInput.text = ""
+          TextInput.text = ""
+        } catch {
+          case e:Exception => CombatInput.text = "Please input an int"
         }
-        CombatInput.text = ""
-        TextInput.text = ""
+
 
       case EditDone(InitInput2) =>
         initializeGame(InitInput2.text.toInt)
-        player = runGame()
+        runGame(player)
         label.text = "Map created"
       case EditDone(InitInput) =>
         label.text = "Please input where you want to go: forward, back, left or right. You may also look or exit."
         initializeGame(InitInput.text.toInt)
-        player = runGame()
+        runGame(player)
 
 
         contents = new BoxPanel(Orientation.Vertical) {
@@ -344,9 +388,6 @@ object GameBase extends SimpleSwingApplication {
   var space: Int = _ //Size of the game space
 
 
-  def managerInitialize() : Unit = {
-
-  }
   //Initialize the game space.
   def initializeGame(size: Int): Unit = {
     x = 0
@@ -388,28 +429,68 @@ object GameBase extends SimpleSwingApplication {
 
 
   //This is the main driver for running the game. Text input so far.
-  def runGame(): Player = {
-    var done: Boolean = false
-    val player = new Player("Sat", space)
-    player.setClass(new Warrior)
+  def runGame(play : Player ): Player = {
+    //var done: Boolean = false
+    val playe = play
     player.setLocationCoord(0, 0)
     player.setLocation(findLoc(player.x, player.y))
+    return playe
+  }
+
+  def openFile : Player = {
+    val chooser = new FileChooser
+    var player = new Player("placeHolder", 1)
+    if(chooser.showOpenDialog(null) == FileChooser.Result.Approve) {
+      val source = scala.io.Source.fromFile(chooser.selectedFile)
+      var counter = 0
+
+      for (line <- source.getLines()) {
+        counter match {
+          case 0 =>
+            player = new Player(line, 30)
+            println(line)
+            counter+=1
+          case 1 =>
+            println(line.toInt)
+            player.Level = line.toInt
+            counter+=1
+          case 2 =>
+            val placlass = line
+            println(placlass)
+
+            placlass match {
+              case "Warrior" =>
+                player.setClass(new Warrior)
+              case "Wizard" =>
+                player.setClass(new Wizard)
+              case "Thief" =>
+                player.setClass(new Thief)
+            }
+        }
+      }
+
+      source.close
+
+    }
     return player
   }
 
-  def openFile{
-    val chooser = new FileChooser
-    if(chooser.showOpenDialog(null) == FileChooser.Result.Approve) {
-      val source = scala.io.Source.fromFile(chooser.selectedFile)
-      source.close
-    }
-  }
-
-  def saveFile{
+  def saveFile {
     val chooser = new FileChooser
     if(chooser.showSaveDialog(null) == FileChooser.Result.Approve) {
-      val printWriter = new java.io.PrintWriter(chooser.selectedFile)
-      printWriter.close()
+      val writer = new java.io.PrintWriter(chooser.selectedFile)
+      //Saves the state of the player
+      if (gameStarted == 0) {
+        writer.println("name")
+        writer.println("3")
+        writer.println("Warrior")
+      }
+      else {
+        writer.println(player.name)
+        writer.println(player.Level)
+        writer.println(player.plaClass.name)
+      }
+      writer.close()
     }
   }
 

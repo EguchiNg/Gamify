@@ -3,12 +3,13 @@ class Locations {
   var monsterAliveCount: Int = 0
   var description: String = _
 
-  def addMonster(monster: Monsters) {
-    opponents = Array(monster)
-    monsterAliveCount += 1
 
+  def addMonster(monster: Monsters) {
+    opponents = opponents ++ Array(monster)
+    monsterAliveCount += 1
   }
 
+  //
   def changeDescription(newDescription: String) {
 
     description = newDescription
