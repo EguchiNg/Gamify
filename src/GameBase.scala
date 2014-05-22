@@ -132,7 +132,6 @@ object GameBase extends SimpleSwingApplication {
       contents += manageButton
       contents += label
     }
-
     //MENUBAR
     menuBar = new MenuBar {
       contents += new Menu("File") {
@@ -149,9 +148,6 @@ object GameBase extends SimpleSwingApplication {
         })
       }
     }
-
-
-
 
     listenTo(button)
     listenTo(ContinueButton)
@@ -208,6 +204,7 @@ object GameBase extends SimpleSwingApplication {
         }
         size = new Dimension(800, 600)
 
+     //Enter management interface
       case ButtonClicked(`manageButton`) =>
         //Go into the management interface
         contents = new BoxPanel(Orientation.Vertical) {
@@ -223,6 +220,7 @@ object GameBase extends SimpleSwingApplication {
           player.setClass(new Warrior)
         }
         size = new Dimension(800, 600)
+      //Size setter
       case ButtonClicked(`mapButton`) =>
         label.text = "Enter size of map you want"
         contents = new BoxPanel(Orientation.Vertical) {
@@ -231,6 +229,7 @@ object GameBase extends SimpleSwingApplication {
           contents += InitInput2
         }
         size = new Dimension(800, 600)
+        //Location maker
       case ButtonClicked(`locationButton`)=>
         label.text = "Put x and y coords of where you want to put the location, and a name and description"
         contents = new BoxPanel(Orientation.Vertical) {
@@ -242,6 +241,7 @@ object GameBase extends SimpleSwingApplication {
           contents += submitLocation
         }
         size = new Dimension(800, 600)
+      //Manager monster maker
       case ButtonClicked(`monsterButton`)=>
         label.text = "Put x and y coords of where you want to put the monster, and a name and level"
         contents = new BoxPanel(Orientation.Vertical) {
@@ -272,6 +272,7 @@ object GameBase extends SimpleSwingApplication {
         size = new Dimension(800, 600)
 
 
+      //Acknowledge the presence of MONSTERS
       case ButtonClicked(`ContinueButton`) =>
         val loc = player.currentLocation
         var temp = "Monsters: <br/>"
@@ -330,6 +331,7 @@ object GameBase extends SimpleSwingApplication {
         }
 
 
+      //InitInput2 is for the manager interface, InitInput is just for the quick start.
       case EditDone(InitInput2) =>
         initializeGame(InitInput2.text.toInt)
         gameStarted = 1
@@ -350,8 +352,8 @@ object GameBase extends SimpleSwingApplication {
         deafTo(InitInput)
         listenTo(TextInput)
 
+      //This is the main case for exploration
       case EditDone(TextInput) =>
-
         val temp = player.act(TextInput.text)
         player.setLocation(findLoc(player.x, player.y))
         val loc = player.currentLocation
@@ -400,6 +402,7 @@ object GameBase extends SimpleSwingApplication {
     fillMap()
   }
 
+  //Populate the map randomly for a quick start.
   def fillMap(): Unit = {
     val rand = new Random()
 
@@ -417,10 +420,12 @@ object GameBase extends SimpleSwingApplication {
     }
   }
 
+  //Simple function that finds the location on the map that the currently occupies
   def findLoc(xloc: Int, yloc: Int): Locations = {
     map(xloc)(yloc)
   }
 
+  //Checks to see if combat is available here.
   def combatAvailable(loc: Locations): Boolean = {
     if (loc.monsterAliveCount <= 0) {
       false
@@ -461,6 +466,7 @@ object GameBase extends SimpleSwingApplication {
             val placlass = line
             println(placlass)
 
+            //Match class to set as
             placlass match {
               case "Warrior" =>
                 player.setClass(new Warrior)
@@ -471,7 +477,6 @@ object GameBase extends SimpleSwingApplication {
             }
         }
       }
-
       source.close
 
     }
@@ -482,12 +487,14 @@ object GameBase extends SimpleSwingApplication {
     val chooser = new FileChooser
     if(chooser.showSaveDialog(null) == FileChooser.Result.Approve) {
       val writer = new java.io.PrintWriter(chooser.selectedFile)
-      //Saves the state of the player
+      //Saves the state of the player. Testing version for a generic one.
+
       if (gameStarted == 0) {
         writer.println("name")
         writer.println("3")
         writer.println("Warrior")
       }
+      //Version for regular use
       else {
         writer.println(player.name)
         writer.println(player.Level)

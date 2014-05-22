@@ -29,7 +29,6 @@ class Monsters(name1: String, level1: Int) {
         return name + " hit " + player.name + " for " + meleeDamage
 
       }
-
     }
     else {
       return name + " missed " + player.name

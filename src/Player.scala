@@ -14,7 +14,8 @@ class Player(nameInput: String, space: Int) {
   var armorRating: Int = _
   var plaClass: Classes = _
   var currentLocation: Locations = _
-  
+
+  //Set class
   def setClass(select: Classes){
     plaClass = select
     MaxHP = 10
@@ -30,16 +31,19 @@ class Player(nameInput: String, space: Int) {
   var Dexterity: Int = _
   var Constitution: Int = _
   var Wisdom: Int = _
-  
+
+  //Set coordinate
   def setLocationCoord(xloc: Int, yloc: Int) : Unit = {
     x = xloc
     y = yloc
   }
-  
+
+  //A little setLocation thing
   def setLocation(loc: Locations) : Unit = {
     currentLocation = loc
   }
-  
+
+  //Gain experience, levelup if it gets to 1000.
   def gainExperience(amount: Int) : Unit = {
     Experience += amount
     if (Experience >= 1000)
